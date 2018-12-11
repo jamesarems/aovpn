@@ -1,5 +1,5 @@
 ###Freedom along with security for Cyber
-## Opennebula Server (Hardening - Version)
+## OpenVPN Server (Hard - Version)
 ## Author : James PS
 ## Email  : jamesarems@hotmail.com
 ## Git    : github.com/jamesarems
