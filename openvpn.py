@@ -36,10 +36,9 @@ except IndexError:
 ########################
 
 
-def checkRoot():
-	os.system('clear')
+def checkRoot(artW):
 	if ( uid == "0" ):
-		osCheck()
+		osCheck(artW)
 		#print('Ok aanutto')
 	else:
 		print('\x1b[0;37;41m' +'You are not root user' + '\x1b[0m')
@@ -49,7 +48,7 @@ def checkRoot():
 def depCheck():
 	print('\x1b[6;30;42m' +'CHECKING DEPS----->'+ '\x1b[0m')
 	os.system('yum install epel-release -y > /tmp/server.log')
-	os.system('yum install -y openvpn easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr')
+	os.system('yum install -y openvpn python-pip easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr')
 	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log')
 	os.system('mkdir -p %s/client > /tmp/server.log' % (confDir))
 	print('Deps saved')
@@ -98,12 +97,21 @@ def fireWall():
 	os.system('/usr/bin/bash iptables.sh; mv iptables.sh %s' % (confDir))
 	srvConf()
 
+def artWork():
+       	artW =   """
+	            ___  __ 
+                   |__| |  | |  | |__] |\ | 
+                   |  | |__|  \/  |    | \| 
+                 """
+	os.system('clear')
+	print('\033[1;33;40m' +artW+ '\033[0m')
+	checkRoot(artW)
+
 def cleanAll():
 	print('\x1b[6;30;42m' +'CHECKING EXISTING INSTALLATION------>'+ '\x1b[0m')	
 	if ( ovpn == "openvpn" ):
 		opt1 = raw_input('\x1b[1;31;40m' + 'Existing server found, shall I clean and reinstall? (y/n)' + '\x1b[0m')
 		if ( opt1 == "y"):
-			os.system('clear')
 			cleanAllMain()
 		elif (opt1 == "n" ):
 			print('You declined it, I cant process with existing installation, exiting')
@@ -114,9 +122,9 @@ def cleanAll():
 	else:
 		cleanAllMain()
 
-def osCheck():
+def osCheck(artW):
 	if ( osvr == "centos-release-7" ):
-		inputCheck()
+		inputCheck(artW)
 	else:
 		print('Your Operating system is not supported')
 		sys.exit(1)	
@@ -128,13 +136,14 @@ def cleanAllMain():
 	os.system('rm -rf %s' % (confDir))
 	depCheck()
 
-def inputCheck():
+def inputCheck(artW):
 	if ( inputd == "client"):
 		clientConf()
 	elif ( inputd == "server" ):
 		cleanAll()
 	else:	
 		os.system('clear')
+		print('\033[1;33;40m' +artW+ '\033[0m')
 		print('\x1b[0;37;44m' +'OpenVPN.py'+ '\x1b[0m' ', 2018-19 Developed by James PS. ')
 		print('Options ------> help , server, client, advance-server, advance-client')
 		sys.exit(1)
@@ -164,5 +173,5 @@ def clientConf():
 		print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
 		sys.exit(1)
 
-
-checkRoot()
+artWork()
+#checkRoot()
