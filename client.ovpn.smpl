@@ -8,7 +8,7 @@ pull
 client
 dev tun
 proto udp
-remote serverip 1194
+remote serverip serverport
 redirect-gateway def1
 nobind
 persist-key

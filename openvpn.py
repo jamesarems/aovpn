@@ -17,13 +17,15 @@ with open('aovpn-config.json') as f:
 ##Read by section
 
 confDir = readC['aovpn']['config']
+confV = readC['aovpn']['version']
+confR = readC['aovpn']['release']
 confProto = readC['vpn']['proto']
 confPort = readC['vpn']['port']
 confIf = readC['vpn']['interface']
 confIp = readC['vpn']['tunnel']
 confServerIp = readC['os']['ip']
 
-
+## Dep info collection
 uid = os.popen('id -u').read(1)
 ipf = os.popen('more /proc/sys/net/ipv4/ip_forward').read(1)
 ovpn = os.popen('rpm -q openvpn').read(7)
@@ -105,6 +107,7 @@ def artWork():
                  """
 	os.system('clear')
 	print('\033[1;33;40m' +artW+ '\033[0m')
+	print('Released on: ' +confR+ ' Verion: ' +confV)
 	checkRoot(artW)
 
 def cleanAll():
@@ -138,40 +141,49 @@ def cleanAllMain():
 
 def inputCheck(artW):
 	if ( inputd == "client"):
-		clientConf()
+		clientConf(artW)
 	elif ( inputd == "server" ):
 		cleanAll()
 	else:	
 		os.system('clear')
 		print('\033[1;33;40m' +artW+ '\033[0m')
+		print('Released on:' +confR+ ' Verion: ' +confV)
 		print('\x1b[0;37;44m' +'OpenVPN.py'+ '\x1b[0m' ', 2018-19 Developed by James PS. ')
 		print('Options ------> help , server, client, advance-server, advance-client')
 		sys.exit(1)
 
-def clientConf():
+def clientConf(artW):
+	os.system('clear')
+	print('\033[1;33;40m' +artW+ '\033[0m')
+        print('Released on: ' +confR+ ' Verion: ' +confV)
 	print('\x1b[6;30;42m' +'CREATING CLIENT CERTIFICATES------>'+ '\x1b[0m')
-	clientName = raw_input('Input user/client name: ')
-	serverIp = confServerIp
-	if not clientName:
-		print('ERROR : YOU MUST PUT USER/CLIENT NAME..!')
-		sys.exit(1)
-	elif not serverIp:
-		print('ERROR : YOU MUST PUT SERVER IP..!')
-                sys.exit(1)
-	else:
-		os.system('rm -rf %s; rm -rf %s.tar' % (clientName, clientName) )
-		os.system('rm -rf pki/issued/%s.crt;rm -rf pki/private/%s.key; rm -rf pki/reqs/%s.req;sed -i "/%s/d" pki/index.txt ' % (clientName, clientName, clientName, clientName) )
-		os.system('/usr/share/easy-rsa/3/easyrsa build-client-full %s nopass' % (clientName) )
-		os.system('mkdir %s/client/%s' % (confDir, clientName) )
-		os.system('cp pki/ca.crt %s/client/%s/ca.crt' % (confDir, clientName) )
-		os.system('cp pki/issued/%s.crt %s/client/%s/client.crt' % (clientName, confDir, clientName) )
-		os.system('cp pki/private/%s.key %s/client/%s/client.key' % (clientName, confDir, clientName) )
-		os.system('cp pki/ta.key %s/client/%s/ta.key' % (confDir, clientName) )
-		os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn' % (confDir, clientName) )
-		os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
-		os.system('tar cfz %s.tgz %s/client/%s ' % (clientName, confDir, clientName))
-		print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
-		sys.exit(1)
+	try:
+		clientName = raw_input('Input user/client name: ')
+		serverIp = confServerIp
+		if not clientName:
+			print('ERROR : YOU MUST PUT USER/CLIENT NAME..!')
+			sys.exit(1)
+		elif not serverIp:
+			print('ERROR : YOU MUST PUT SERVER IP..!')
+                	sys.exit(1)
+		else:
+			os.system('rm -rf %s; rm -rf %s.tar' % (clientName, clientName) )
+			os.system('rm -rf pki/issued/%s.crt;rm -rf pki/private/%s.key; rm -rf pki/reqs/%s.req;sed -i "/%s/d" pki/index.txt ' % (clientName, clientName, clientName, clientName) )
+			os.system('/usr/share/easy-rsa/3/easyrsa build-client-full %s nopass' % (clientName) )
+			os.system('mkdir %s/client/%s' % (confDir, clientName) )
+			os.system('cp pki/ca.crt %s/client/%s/ca.crt' % (confDir, clientName) )
+			os.system('cp pki/issued/%s.crt %s/client/%s/client.crt' % (clientName, confDir, clientName) )
+			os.system('cp pki/private/%s.key %s/client/%s/client.key' % (clientName, confDir, clientName) )
+			os.system('cp pki/ta.key %s/client/%s/ta.key' % (confDir, clientName) )
+			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn' % (confDir, clientName) )
+			os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
+			os.system("sed -i 's/serverport/%s/g' %s/client/%s/client.ovpn " % (confPort, confDir, clientName))
+			os.system('tar cfz %s.tgz %s/client/%s ' % (clientName, confDir, clientName))
+			print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
+			sys.exit(1)
+	except KeyboardInterrupt:
+		print('You canceled it. Please try again')
+		sys.exit()
 
 artWork()
 #checkRoot()
