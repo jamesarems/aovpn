@@ -1,5 +1,5 @@
-#!/bin/python
-###Freedom along with security for Cyber
+#!/usr/bin/python
+###Freedom along with security for Internet
 ## Opennebula Server (Hardening - Version)
 ## Author : James PS
 ## Email  : jamesarems@hotmail.com
@@ -7,6 +7,23 @@
 ###
 
 import os,sys,subprocess
+import json
+import pprint
+
+##Read Configuration File
+with open('aovpn-config.json') as f:
+	readC = json.load(f)
+
+##Read by section
+
+confDir = readC['aovpn']['config']
+confProto = readC['vpn']['proto']
+confPort = readC['vpn']['port']
+confIf = readC['vpn']['interface']
+confIp = readC['vpn']['tunnel']
+confServerIp = readC['os']['ip']
+
+
 uid = os.popen('id -u').read(1)
 ipf = os.popen('more /proc/sys/net/ipv4/ip_forward').read(1)
 ovpn = os.popen('rpm -q openvpn').read(7)
@@ -34,6 +51,7 @@ def depCheck():
 	os.system('yum install epel-release -y > /tmp/server.log')
 	os.system('yum install -y openvpn easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr')
 	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log')
+	os.system('mkdir -p %s/client > /tmp/server.log' % (confDir))
 	print('Deps saved')
 	createCerts()
 
@@ -50,7 +68,11 @@ def createCerts():
 
 def copyConf():
 	print('\x1b[6;30;42m' +'COPYING CONFIGURATIONS AND CERTS----->'+ '\x1b[0m')
-	os.system('cp pki/ca.crt /etc/openvpn/ca.crt; cp iptables.sh firewall.sh; cp pki/dh.pem /etc/openvpn/dh.pem; cp pki/issued/server.crt /etc/openvpn/server.crt; cp pki/private/server.key /etc/openvpn/server.key; cp pki/ta.key /etc/openvpn/ta.key; cp pki/crl.pem /etc/openvpn/crl.pem; cp server-sample.conf /etc/openvpn/server.conf ')
+	os.system('cp server.conf.smpl server.conf')
+	os.system("sed -i 's/APROTO/%s/g' server.conf " % (confProto))
+	os.system("sed -i 's/APORT/%s/g' server.conf " % (confPort))
+	os.system("sed -i 's/ATUNNEL/%s/g' server.conf " % (confIp))
+	os.system('cp pki/ca.crt /etc/openvpn/ca.crt; cp iptables.sh.smpl iptables.sh; cp pki/dh.pem /etc/openvpn/dh.pem; cp pki/issued/server.crt /etc/openvpn/server.crt; cp pki/private/server.key /etc/openvpn/server.key; cp pki/ta.key /etc/openvpn/ta.key; cp pki/crl.pem /etc/openvpn/crl.pem; mv server.conf /etc/openvpn/server.conf ')
 	if ( ipf == "1"):
 		print('Done')
 		fireWall()
@@ -61,29 +83,30 @@ def copyConf():
 def srvConf():
 	print('\x1b[6;30;42m' +'STARTING SERVICES------>'+ '\x1b[0m')
 	os.system('systemctl -f enable openvpn@server.service')
-	os.system('systemctl start openvpn@server.service iptables')
-	os.system('systemctl enable iptables')
+	os.system('systemctl restart openvpn@server.service iptables')
 	os.system('iptables-save')
 
 def fireWall():
 	print('\x1b[6;30;42m' +'CONFIGURING FIREWALL----->'+ '\x1b[0m')
 	aeth = os.popen('ip link show').read()
 	print('\x1b[0;35;40m' +aeth+ '\x1b[0m')
-	ethernet = raw_input('Your ethernet inetrface name? Eg: eth0 : ')
-	os.system("sed -i 's/eth0/%s/g' firewall.sh " % (ethernet))
+	ethernet = confIf
+	os.system("sed -i 's/eth0/%s/g' iptables.sh " % (ethernet))
 	os.system('iptables -F')
-	os.system('/usr/bin/bash iptables.sh')
+	os.system('systemctl enable iptables')
+	os.system('systemctl restart iptables')
+	os.system('/usr/bin/bash iptables.sh; mv iptables.sh %s' % (confDir))
 	srvConf()
 
 def cleanAll():
 	print('\x1b[6;30;42m' +'CHECKING EXISTING INSTALLATION------>'+ '\x1b[0m')	
 	if ( ovpn == "openvpn" ):
-		opt1 = raw_input('\x1b[1;31;40m' + 'Existing server found, shall i clean and reinstall? (y/n)' + '\x1b[0m')
+		opt1 = raw_input('\x1b[1;31;40m' + 'Existing server found, shall I clean and reinstall? (y/n)' + '\x1b[0m')
 		if ( opt1 == "y"):
 			os.system('clear')
 			cleanAllMain()
 		elif (opt1 == "n" ):
-			print('You declined it, we cant process with existing installation, exiting')
+			print('You declined it, I cant process with existing installation, exiting')
 			sys.exit(1)
 		else:
 			print('May be you put worng key, please use ' '\x1b[1;33;40m' +'y'+ '\x1b[0m' ' for yes ' 'and ''\x1b[2;32;40m' +  'n' + '\x1b[0m' ' for no')
@@ -100,7 +123,9 @@ def osCheck():
 
 def cleanAllMain():
 	print('\x1b[1;33;41m' +'CLEANING EXISTING SERVICES AND FILES----->'+ '\x1b[0m')
+	os.system('systemctl stop openvpn@server; systemctl disable openvpn@server')
 	os.system('yum remove -y openvpn easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr; rm -rf /etc/openvpn ;rm -rf firewall.sh; rm -rf pki ; rm -rf /tmp/server.log')
+	os.system('rm -rf %s' % (confDir))
 	depCheck()
 
 def inputCheck():
@@ -110,14 +135,14 @@ def inputCheck():
 		cleanAll()
 	else:	
 		os.system('clear')
-		print('\x1b[0;37;44m' +'OpenVPN.py'+ '\x1b[0m' ', 2018 Developed by James PS. ')
+		print('\x1b[0;37;44m' +'OpenVPN.py'+ '\x1b[0m' ', 2018-19 Developed by James PS. ')
 		print('Options ------> help , server, client, advance-server, advance-client')
 		sys.exit(1)
 
 def clientConf():
 	print('\x1b[6;30;42m' +'CREATING CLIENT CERTIFICATES------>'+ '\x1b[0m')
 	clientName = raw_input('Input user/client name: ')
-	serverIp = raw_input('Input VPN Server IP: ')
+	serverIp = confServerIp
 	if not clientName:
 		print('ERROR : YOU MUST PUT USER/CLIENT NAME..!')
 		sys.exit(1)
@@ -128,15 +153,15 @@ def clientConf():
 		os.system('rm -rf %s; rm -rf %s.tar' % (clientName, clientName) )
 		os.system('rm -rf pki/issued/%s.crt;rm -rf pki/private/%s.key; rm -rf pki/reqs/%s.req;sed -i "/%s/d" pki/index.txt ' % (clientName, clientName, clientName, clientName) )
 		os.system('/usr/share/easy-rsa/3/easyrsa build-client-full %s nopass' % (clientName) )
-		os.system('mkdir %s' % (clientName) )
-		os.system('cp pki/ca.crt %s/ca.crt' % (clientName) )
-		os.system('cp pki/issued/%s.crt %s/client.crt' % (clientName, clientName) )
-		os.system('cp pki/private/%s.key %s/client.key' % (clientName, clientName) )
-		os.system('cp pki/ta.key %s/ta.key' % (clientName) )
-		os.system('cp client-sample.ovpn %s/client.ovpn' % (clientName) )
-		os.system("sed -i 's/serverip/%s/g' %s/client.ovpn " % (serverIp, clientName))
-		os.system('tar cfz %s.tgz %s ' % (clientName, clientName))
-		print('YOUR CLIENT FILE IS READY AS %s' % (clientName))
+		os.system('mkdir %s/client/%s' % (confDir, clientName) )
+		os.system('cp pki/ca.crt %s/client/%s/ca.crt' % (confDir, clientName) )
+		os.system('cp pki/issued/%s.crt %s/client/%s/client.crt' % (clientName, confDir, clientName) )
+		os.system('cp pki/private/%s.key %s/client/%s/client.key' % (clientName, confDir, clientName) )
+		os.system('cp pki/ta.key %s/client/%s/ta.key' % (confDir, clientName) )
+		os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn' % (confDir, clientName) )
+		os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
+		os.system('tar cfz %s.tgz %s/client/%s ' % (clientName, confDir, clientName))
+		print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
 		sys.exit(1)
 
 

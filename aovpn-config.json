@@ -1,0 +1,17 @@
+{
+    "aovpn" : {
+        "config" : "/etc/aovpn",
+        "service" : {
+		"centos" : "etc/systemd/system"
+		}
+    	},
+    "vpn" : {
+    	"proto" : "tcp",
+	"port" : "9090",
+	"tunnel" : "192.168.55.0",
+	"interface" : "eth0"
+  	},
+    "os" : {
+	"ip" : "192.168.101.32"
+	}
+}

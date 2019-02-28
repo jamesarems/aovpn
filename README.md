@@ -1,4 +1,4 @@
-# AOVPN Server (Alpha 2.0)
+# AOVPN Server (Beta 1.0)
 
 Advance Open VPN Server (Most secured configuration) and Easy install  with one command. This python program will install and configure OpenVPN server with client certificates and configurations. This program is built for maximum security for vpn connections. 
 
@@ -11,6 +11,9 @@ CentOS 7 , Ubuntu 16.04+ (Soon)
 * Deploy OpenVPN server
 * Automatically create client vpn file
 * Separate options for client and server configurations.
+
+## I am Working on
+
 * Advance options ( Soon )
 * Docker container ( Soon )
 * Encrypted archive with temporary FTP access to download client certificate ( Soon )
@@ -18,7 +21,9 @@ CentOS 7 , Ubuntu 16.04+ (Soon)
 ## Method:  
 
 * Clone Repository
+* Check aovpn-config.json
 * Execute openvpn.py 
+
 
 ## Python Supports
 

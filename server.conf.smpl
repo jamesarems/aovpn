@@ -2,8 +2,8 @@
 
 # Basic Connection Config
 dev tun
-proto udp
-port 1194
+proto APROTO
+port APORT
 keepalive 10 120
 max-clients 5
 
@@ -28,7 +28,7 @@ user nobody
 group nobody
 
 # IP pool
-server 172.31.100.0 255.255.255.0
+server ATUNNEL 255.255.255.0
 topology subnet
 ifconfig-pool-persist ipp.txt
 client-config-dir ccd
