@@ -50,7 +50,7 @@ def checkRoot(artW):
 def depCheck():
 	print('\x1b[6;30;42m' +'CHECKING DEPS----->'+ '\x1b[0m')
 	os.system('yum install epel-release -y > /tmp/server.log')
-	os.system('yum install -y openvpn python-pip easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log')
+	os.system('yum install -y openvpn python-pip easy-rsa iptables zip iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log')
 	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log ; pip install pyftpdlib > /tmp/server.log')
 	os.system('mkdir -p %s/client > /tmp/server.log' % (confDir))
 	print('Deps saved')
@@ -188,17 +188,18 @@ def clientConf(artW):
 			os.system('cp pki/issued/%s.crt %s/client/%s/client.crt' % (clientName, confDir, clientName) )
 			os.system('cp pki/private/%s.key %s/client/%s/client.key' % (clientName, confDir, clientName) )
 			os.system('cp pki/ta.key %s/client/%s/ta.key' % (confDir, clientName) )
-			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn' % (confDir, clientName) )
+			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn ; sh /etc/oavpn/iptables.sh' % (confDir, clientName) )
 			os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
 			os.system("sed -i 's/serverport/%s/g' %s/client/%s/client.ovpn " % (confPort, confDir, clientName))
 			os.system('cd /etc/aovpn/client/ ; tar cfz %s/%s.tgz %s ' % (clientName, clientName, clientName))
 			print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
-			clientAdv()
+			clientAdv(clientName)
 	except KeyboardInterrupt:
 		print('You canceled it. Please try again')
 		sys.exit()
-def clientAdv():
+def clientAdv(clientName):
 	if ( confAdv == "true"):
+		print('\x1b[1;30;46m' +'ADVANCED MODE(ON CLIENT)------>'+ '\x1b[0m')
 		os.system('utils/plus.py %s' % (clientName))
 	else:
 		sys.exit(1)

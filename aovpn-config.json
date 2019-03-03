@@ -8,8 +8,8 @@
 		},
 	"advance" : {
 		"enable" : "true",
-		"ftp" : "true",
-		"encrypt-tar" : "false"
+		"ftp" : "false",
+		"encrypt" : "false"
 		}
     	},
     "vpn" : {
