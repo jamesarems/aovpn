@@ -90,14 +90,15 @@ def srvConf():
 def fireWall():
 	print('\x1b[6;30;42m' +'CONFIGURING FIREWALL----->'+ '\x1b[0m')
 	aeth = os.popen('ip link show').read()
-	print('\x1b[0;35;40m' +aeth+ '\x1b[0m')
+	#print('\x1b[0;35;40m' +aeth+ '\x1b[0m')
 	ethernet = confIf
 	os.system("sed -i 's/eth0/%s/g' iptables.sh " % (ethernet))
 	os.system("sed -i 's/VPNPORT/%s/g' iptables.sh " % (confPort))
 	os.system('iptables -F')
-	os.system('systemctl enable iptables')
+	os.system('systemctl enable iptables > /tmp/server.log')
 	os.system('systemctl restart iptables')
 	os.system('/usr/bin/bash iptables.sh; mv iptables.sh %s' % (confDir))
+	print('Done')
 	srvConf()
 
 def artWork():
@@ -148,9 +149,10 @@ def osCheck(artW):
 
 def cleanAllMain():
 	print('\x1b[1;33;41m' +'CLEANING EXISTING SERVICES AND FILES----->'+ '\x1b[0m')
-	os.system('systemctl stop openvpn@server; systemctl disable openvpn@server')
-	os.system('yum remove -y openvpn easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr; rm -rf /etc/openvpn ;rm -rf firewall.sh; rm -rf pki ; rm -rf /tmp/server.log')
+	os.system('systemctl stop openvpn@server > /tmp/server.log ; systemctl disable openvpn@server > /tmp/server.log')
+	os.system('yum remove -y openvpn easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log; rm -rf /etc/openvpn ;rm -rf firewall.sh; rm -rf pki ; rm -rf /tmp/server.log')
 	os.system('rm -rf %s' % (confDir))
+	print('Done')
 	depCheck()
 
 def inputCheck(artW):
