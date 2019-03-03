@@ -9,7 +9,7 @@
     	},
     "vpn" : {
     	"proto" : "tcp",
-	"port" : "5050",
+	"port" : "1194",
 	"tunnel" : "192.165.10.0",
 	"interface" : "eth0"
   	},

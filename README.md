@@ -1,4 +1,4 @@
-# AOVPN Server (Beta 1.0)
+# AOVPN Server (Antman 1.0)
 
 Advance Open VPN Server (Most secured configuration) and Easy install  with one command. This python program will install and configure OpenVPN server with client certificates and configurations. This program is built for maximum security for vpn connections. 
 
