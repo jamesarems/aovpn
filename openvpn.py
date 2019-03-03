@@ -1,6 +1,6 @@
 #!/usr/bin/python
-###Freedom along with security for Internet
-## Opennebula Server (Hardening - Version)
+###Freedom along with security for Internet - AOVPN
+## OpenVPN Server with advanced security patches and features - Spiderman (2.0) Version
 ## Author : James PS
 ## Email  : jamesarems@hotmail.com
 ## Git    : github.com/jamesarems
@@ -19,6 +19,7 @@ with open('aovpn-config.json') as f:
 confDir = readC['aovpn']['config']
 confV = readC['aovpn']['version']
 confR = readC['aovpn']['release']
+confAdv = readC['aovpn']['advance']['enable']
 confProto = readC['vpn']['proto']
 confPort = readC['vpn']['port']
 confIf = readC['vpn']['interface']
@@ -41,7 +42,6 @@ except IndexError:
 def checkRoot(artW):
 	if ( uid == "0" ):
 		osCheck(artW)
-		#print('Ok aanutto')
 	else:
 		print('\x1b[0;37;41m' +'You are not root user' + '\x1b[0m')
 		sys.exit(1)
@@ -50,8 +50,8 @@ def checkRoot(artW):
 def depCheck():
 	print('\x1b[6;30;42m' +'CHECKING DEPS----->'+ '\x1b[0m')
 	os.system('yum install epel-release -y > /tmp/server.log')
-	os.system('yum install -y openvpn python-pip easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr')
-	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log')
+	os.system('yum install -y openvpn python-pip easy-rsa iptables iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log')
+	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log ; pip install pyftpdlib > /tmp/server.log')
 	os.system('mkdir -p %s/client > /tmp/server.log' % (confDir))
 	print('Deps saved')
 	createCerts()
@@ -85,7 +85,7 @@ def srvConf():
 	print('\x1b[6;30;42m' +'STARTING SERVICES------>'+ '\x1b[0m')
 	os.system('systemctl -f enable openvpn@server.service')
 	os.system('systemctl restart openvpn@server.service iptables')
-	os.system('iptables-save')
+	os.system('iptables-save > /tmp/server.log')
 
 def fireWall():
 	print('\x1b[6;30;42m' +'CONFIGURING FIREWALL----->'+ '\x1b[0m')
@@ -93,6 +93,7 @@ def fireWall():
 	print('\x1b[0;35;40m' +aeth+ '\x1b[0m')
 	ethernet = confIf
 	os.system("sed -i 's/eth0/%s/g' iptables.sh " % (ethernet))
+	os.system("sed -i 's/VPNPORT/%s/g' iptables.sh " % (confPort))
 	os.system('iptables -F')
 	os.system('systemctl enable iptables')
 	os.system('systemctl restart iptables')
@@ -100,15 +101,27 @@ def fireWall():
 	srvConf()
 
 def artWork():
-       	artW =   """
-	            ___  __ 
-                   |__| |  | |  | |__] |\ | 
-                   |  | |__|  \/  |    | \| 
-                 """
-	os.system('clear')
-	print('\033[1;33;40m' +artW+ '\033[0m')
-	print('Released on: ' +confR+ ' Verion: ' +confV)
-	checkRoot(artW)
+       	if ( confAdv == "true"):
+		artW =   """
+                   		 ___  __ 
+                   		|__| |  | |  | |__] |\ | 
+                   		|  | |__|  \/  |    | \| Advanced
+                	 """
+        	os.system('clear')
+        	print('\033[1;32;40m' +artW+ '\033[0m 1;32;40m')
+        	print('Released on: ' +confR+ ' Verion: ' +confV)
+        	checkRoot(artW)
+	else:
+
+		artW =   """
+			          ___  __ 
+               			 |__| |  | |  | |__] |\ | 
+               			 |  | |__|  \/  |    | \| 
+                 	 """
+		os.system('clear')
+		print('\033[1;33;40m' +artW+ '\033[0m')
+		print('Released on: ' +confR+ ' Verion: ' +confV)
+		checkRoot(artW)
 
 def cleanAll():
 	print('\x1b[6;30;42m' +'CHECKING EXISTING INSTALLATION------>'+ '\x1b[0m')	
@@ -148,8 +161,8 @@ def inputCheck(artW):
 		os.system('clear')
 		print('\033[1;33;40m' +artW+ '\033[0m')
 		print('Released on:' +confR+ ' Verion: ' +confV)
-		print('\x1b[0;37;44m' +'OpenVPN.py'+ '\x1b[0m' ', 2018-19 Developed by James PS. ')
-		print('Options ------> help , server, client, advance-server, advance-client')
+		print('2018-19 Developed by James PS. ')
+		print('Options --> server, client.  Please check aovpn-config.json')
 		sys.exit(1)
 
 def clientConf(artW):
@@ -167,7 +180,7 @@ def clientConf(artW):
 			print('ERROR : YOU MUST PUT SERVER IP..!')
                 	sys.exit(1)
 		else:
-			os.system('rm -rf %s; rm -rf %s.tar' % (clientName, clientName) )
+			os.system('cd /etc/aovpn/client/ ; rm -rf %s' % (clientName) )
 			os.system('rm -rf pki/issued/%s.crt;rm -rf pki/private/%s.key; rm -rf pki/reqs/%s.req;sed -i "/%s/d" pki/index.txt ' % (clientName, clientName, clientName, clientName) )
 			os.system('/usr/share/easy-rsa/3/easyrsa build-client-full %s nopass' % (clientName) )
 			os.system('mkdir %s/client/%s' % (confDir, clientName) )
@@ -178,12 +191,17 @@ def clientConf(artW):
 			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn' % (confDir, clientName) )
 			os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
 			os.system("sed -i 's/serverport/%s/g' %s/client/%s/client.ovpn " % (confPort, confDir, clientName))
-			os.system('tar cfz %s.tgz %s/client/%s ' % (clientName, confDir, clientName))
+			os.system('cd /etc/aovpn/client/ ; tar cfz %s/%s.tgz %s ' % (clientName, clientName, clientName))
 			print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
-			sys.exit(1)
+			clientAdv()
 	except KeyboardInterrupt:
 		print('You canceled it. Please try again')
 		sys.exit()
+def clientAdv():
+	if ( confAdv == "true"):
+		os.system('utils/plus.py %s' % (clientName))
+	else:
+		sys.exit(1)
 
 artWork()
 #checkRoot()

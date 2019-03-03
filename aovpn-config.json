@@ -1,17 +1,26 @@
 {
     "aovpn" : { 
         "config" : "/etc/aovpn",
-	"version" : "1.0 Antman",
-	"release" : "28 Feb 2019",
+	"version" : "2.0 Spiderman",
+	"release" : "Ongoing 2019",
         "service" : {
 		"centos" : "etc/systemd/system"
+		},
+	"advance" : {
+		"enable" : "true",
+		"ftp" : "true",
+		"encrypt-tar" : "false"
 		}
     	},
     "vpn" : {
     	"proto" : "tcp",
 	"port" : "1194",
 	"tunnel" : "192.165.10.0",
-	"interface" : "eth0"
+	"interface" : "eth0",
+	"plus" : {
+		"enable" : "false",
+		"client2client" : "false"
+		}
   	},
     "os" : {
 	"ip" : "192.168.101.32"
