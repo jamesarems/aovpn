@@ -84,7 +84,7 @@ def copyConf():
 def srvConf():
 	print('\x1b[6;30;42m' +'STARTING SERVICES------>'+ '\x1b[0m')
 	os.system('systemctl -f enable openvpn@server.service')
-	os.system('systemctl restart openvpn@server.service iptables')
+	os.system('systemctl restart openvpn@server.service')
 	os.system('iptables-save > /tmp/server.log')
 
 def fireWall():
