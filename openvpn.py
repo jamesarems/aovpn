@@ -167,11 +167,11 @@ def inputCheck(artW):
 		sys.exit(1)
 
 def clientConf(artW):
-	mainPki = os.popen('ls -lR pki | grep ^d | wc -l').read()
+	mainPki = os.popen('ls -lR pki | grep ^d | wc -l').read(1)
 	os.system('clear')
 	print('\033[1;33;40m' +artW+ '\033[0m')
         print('Released on: ' +confR+ ' Verion: ' +confV)
-	if ( mainPki == "1"):
+	if ( mainPki == "4"):
 		print('...')
 	else:
 		print('Server not found. Please install and configure server')
@@ -195,7 +195,7 @@ def clientConf(artW):
 			os.system('cp pki/issued/%s.crt %s/client/%s/client.crt' % (clientName, confDir, clientName) )
 			os.system('cp pki/private/%s.key %s/client/%s/client.key' % (clientName, confDir, clientName) )
 			os.system('cp pki/ta.key %s/client/%s/ta.key' % (confDir, clientName) )
-			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn ; sh /etc/oavpn/iptables.sh' % (confDir, clientName) )
+			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn ; sh /etc/aovpn/iptables.sh' % (confDir, clientName) )
 			os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
 			os.system("sed -i 's/serverport/%s/g' %s/client/%s/client.ovpn " % (confPort, confDir, clientName))
 			os.system('cd /etc/aovpn/client/ ; tar cfz %s/%s.tgz %s ' % (clientName, clientName, clientName))
