@@ -167,9 +167,15 @@ def inputCheck(artW):
 		sys.exit(1)
 
 def clientConf(artW):
+	mainPki = os.popen('ls -lR pki | grep ^d | wc -l').read()
 	os.system('clear')
 	print('\033[1;33;40m' +artW+ '\033[0m')
         print('Released on: ' +confR+ ' Verion: ' +confV)
+	if ( mainPki == "1"):
+		print('...')
+	else:
+		print('Server not found. Please install and configure server')
+		sys.exit(1)
 	print('\x1b[6;30;42m' +'CREATING CLIENT CERTIFICATES------>'+ '\x1b[0m')
 	try:
 		clientName = raw_input('Input user/client name: ')
