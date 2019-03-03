@@ -50,7 +50,7 @@ def checkRoot(artW):
 def depCheck():
 	print('\x1b[6;30;42m' +'CHECKING DEPS----->'+ '\x1b[0m')
 	os.system('yum install epel-release -y > /tmp/server.log')
-	os.system('yum install -y openvpn python-pip easy-rsa iptables zip iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log')
+	os.system('yum install -y openvpn python-pip screen easy-rsa iptables zip iptables-services wget yum-cron net-tools bind-utils nc mtr > /tmp/server.log')
 	os.system('mkdir /etc/openvpn/ccd > /tmp/server.log ; pip install pyftpdlib > /tmp/server.log')
 	os.system('mkdir -p %s/client > /tmp/server.log' % (confDir))
 	print('Deps saved')

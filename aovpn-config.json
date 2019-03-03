@@ -7,7 +7,7 @@
 		"centos" : "etc/systemd/system"
 		},
 	"advance" : {
-		"enable" : "true",
+		"enable" : "false",
 		"ftp" : "false",
 		"encrypt" : "false"
 		}
