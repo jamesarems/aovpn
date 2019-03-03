@@ -136,6 +136,7 @@ def cleanAll():
 			print('May be you put worng key, please use ' '\x1b[1;33;40m' +'y'+ '\x1b[0m' ' for yes ' 'and ''\x1b[2;32;40m' +  'n' + '\x1b[0m' ' for no')
 			sys.exit(1)
 	else:
+		print('Fresh Installation Started')
 		cleanAllMain()
 
 def osCheck(artW):
