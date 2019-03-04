@@ -1,6 +1,6 @@
 # AOVPN Server (Spiderman 2.0 Alpha)
 
-![alt text]()
+![alt text](https://github.com/jamesarems/aovpn/raw/devel/utils/aovpn.PNG)
 
 Advance Open VPN Server (Most secured configuration) and Easy install  with one command. This python program will install and configure OpenVPN server with client certificates and configurations. This program is built for maximum security for vpn connections. 
 
