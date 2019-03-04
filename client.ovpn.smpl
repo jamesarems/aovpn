@@ -7,7 +7,7 @@ tls-client
 pull
 client
 dev tun
-proto udp
+proto sproto
 remote serverip serverport
 redirect-gateway def1
 nobind

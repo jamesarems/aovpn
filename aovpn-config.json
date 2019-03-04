@@ -7,9 +7,9 @@
 		"centos" : "etc/systemd/system"
 		},
 	"advance" : {
-		"enable" : "false",
-		"ftp" : "false",
-		"encrypt" : "false"
+		"enable" : "true",
+		"ftp" : "true",
+		"encrypt" : "true"
 		}
     	},
     "vpn" : {

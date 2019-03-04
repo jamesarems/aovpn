@@ -200,6 +200,7 @@ def clientConf(artW):
 			os.system('cp client.ovpn.smpl %s/client/%s/client.ovpn ; sh /etc/aovpn/iptables.sh' % (confDir, clientName) )
 			os.system("sed -i 's/serverip/%s/g' %s/client/%s/client.ovpn " % (serverIp, confDir, clientName))
 			os.system("sed -i 's/serverport/%s/g' %s/client/%s/client.ovpn " % (confPort, confDir, clientName))
+			os.system("sed -i 's/sproto/%s/g' %s/client/%s/client.ovpn " % (confProto, confDir, clientName))
 			os.system('cd /etc/aovpn/client/ ; tar cfz %s/%s.tgz %s ' % (clientName, clientName, clientName))
 			print('YOUR CLIENT FILE IS READY AS %s.tgz' % (clientName))
 			clientAdv(clientName)
