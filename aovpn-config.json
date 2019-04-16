@@ -1,8 +1,8 @@
 {
     "aovpn" : { 
         "config" : "/etc/aovpn",
-	"version" : "2.0 Spiderman",
-	"release" : "Ongoing 2019",
+	"version" : "2.0 Spiderman (Early Release)",
+	"release" : "May 2019",
         "service" : {
 		"centos" : "etc/systemd/system"
 		},
