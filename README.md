@@ -1,22 +1,24 @@
-# AOVPN Server (Antman 1.0)
+# AOVPN Server (Spiderman 2.0 Beta)
+
+![alt text](https://github.com/jamesarems/aovpn/raw/devel/utils/aovpn.PNG)
 
 Advance Open VPN Server (Most secured configuration) and Easy install  with one command. This python program will install and configure OpenVPN server with client certificates and configurations. This program is built for maximum security for vpn connections. 
 
 ## Supported OS : 
 
-CentOS 7 , Ubuntu 16.04+ (Soon)
+CentOS 7
 
 ## Features
 
 * Deploy OpenVPN server
 * Automatically create client vpn file
 * Separate options for client and server configurations.
+* Encrypted archive with temporary FTP access to download client certificate.
 
 ## I am Working on
 
 * Advance options ( Soon )
 * Docker container ( Soon )
-* Encrypted archive with temporary FTP access to download client certificate ( Soon )
 
 ## Method:  
 
@@ -31,4 +33,4 @@ CentOS 7 , Ubuntu 16.04+ (Soon)
 
 ## Support
 
-If you like my project , please give 1 star :) And any suggessions please share it with issues. 
+If you like this project , please give 1 star :) And any suggessions please share it with issues.
