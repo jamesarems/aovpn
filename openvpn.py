@@ -24,6 +24,7 @@ confProto = readC['vpn']['proto']
 confPort = readC['vpn']['port']
 confIf = readC['vpn']['interface']
 confIp = readC['vpn']['tunnel']
+confWeb = readC['aovpn']['web']
 confServerIp = readC['os']['ip']
 
 ## Dep info collection
@@ -73,7 +74,7 @@ def copyConf():
 	os.system("sed -i 's/APROTO/%s/g' server.conf " % (confProto))
 	os.system("sed -i 's/APORT/%s/g' server.conf " % (confPort))
 	os.system("sed -i 's/ATUNNEL/%s/g' server.conf " % (confIp))
-	os.system('cp pki/ca.crt /etc/openvpn/ca.crt; cp iptables.sh.smpl iptables.sh; cp pki/dh.pem /etc/openvpn/dh.pem; cp pki/issued/server.crt /etc/openvpn/server.crt; cp pki/private/server.key /etc/openvpn/server.key; cp pki/ta.key /etc/openvpn/ta.key; cp pki/crl.pem /etc/openvpn/crl.pem; mv server.conf /etc/openvpn/server.conf ')
+	os.system('cp pki/ca.crt /etc/openvpn/ca.crt; cp iptables.sh.smpl iptables.sh; cp pki/dh.pem /etc/openvpn/dh.pem; cp pki/issued/server.crt /etc/openvpn/server.crt; cp pki/private/server.key /etc/openvpn/server.key; cp pki/ta.key /etc/openvpn/ta.key; cp pki/crl.pem /etc/openvpn/crl.pem; ln -s aovpn-config.json /etc/aovpn/aovpn-config.json; mv server.conf /etc/openvpn/server.conf ')
 	if ( ipf == "1"):
 		print('Done')
 		fireWall()
@@ -94,6 +95,8 @@ def fireWall():
 	ethernet = confIf
 	os.system("sed -i 's/eth0/%s/g' iptables.sh " % (ethernet))
 	os.system("sed -i 's/VPNPORT/%s/g' iptables.sh " % (confPort))
+	os.system("sed -i 's/VPNNET/%s/g' iptables.sh " % (confIp))
+	os.system("sed -i 's/VPNPROTO/%s/g' iptables.sh " % (confProto))
 	os.system('iptables -F')
 	os.system('systemctl enable iptables > /tmp/server.log')
 	os.system('systemctl restart iptables')

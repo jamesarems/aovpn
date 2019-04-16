@@ -1,4 +1,4 @@
-# AOVPN Server (Spiderman 2.0 Alpha)
+# AOVPN Server (Spiderman 2.0 Beta)
 
 ![alt text](https://github.com/jamesarems/aovpn/raw/devel/utils/aovpn.PNG)
 
@@ -6,14 +6,14 @@ Advance Open VPN Server (Most secured configuration) and Easy install  with one 
 
 ## Supported OS : 
 
-CentOS 7 , Ubuntu 16.04+
+CentOS 7
 
 ## Features
 
 * Deploy OpenVPN server
 * Automatically create client vpn file
 * Separate options for client and server configurations.
-* Encrypted archive with temporary FTP access to download client certificate.(Completed)
+* Encrypted archive with temporary FTP access to download client certificate.
 
 ## I am Working on
 
@@ -33,4 +33,4 @@ CentOS 7 , Ubuntu 16.04+
 
 ## Support
 
-If you like this project , please give 1 star :) And any suggessions please share it with issues. 
+If you like this project , please give 1 star :) And any suggessions please share it with issues.
