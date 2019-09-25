@@ -13,7 +13,8 @@ redirect-gateway def1
 nobind
 persist-key
 persist-tun
-comp-lzo
+## Disable lzo and enable lz4v2
+#comp-lzo
 verb 3
 ca ca.crt
 cert client.crt
