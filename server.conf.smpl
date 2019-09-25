@@ -36,7 +36,10 @@ client-config-dir ccd
 # Misc
 persist-key
 persist-tun
-comp-lzo
+# Compression
+#comp-lzo
+compress lz4-v2
+push "compress lz4-v2"
 
 # DHCP Push options force all traffic through VPN and sets DNS servers
 push "redirect-gateway def1 bypass-dhcp"
